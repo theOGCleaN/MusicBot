@@ -58,24 +58,24 @@ public class MusicBotUI extends javax.swing.JFrame {
         browseBtnClick();
     }//GEN-LAST:event_browseBtnMouseClicked
  
-    public static void browseBtnClick(){
+    public static boolean browseBtnClick(){
         try{
             JFileChooser fileBrowser = new JFileChooser();
             fileBrowser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int result = fileBrowser.showOpenDialog(fileBrowser);
             if (result == JFileChooser.APPROVE_OPTION){
                 path = fileBrowser.getSelectedFile().getAbsolutePath();
-                writePath();
+                return true;
             }
         }catch(Exception e){
             System.out.println("You must select a folder as music library!");
         }
-        
+        return false;
     }
     
-    public static void writePath(){
+    public static void writePath(File pathFile){
         try{
-            PrintWriter pw = new PrintWriter("path.dll");
+            PrintWriter pw = new PrintWriter(pathFile);
             pw.write(path);
             pw.close();
         }catch(Exception e){
@@ -176,7 +176,7 @@ public class MusicBotUI extends javax.swing.JFrame {
         
         LinkedList<File> library = null;
         File indexFile = new File("musicIndex.dat");
-        File pathFile = new File("path.dll");
+        File pathFile = new File("path.dat");
         
         while(path == null){
             if (pathFile.exists()){
@@ -185,7 +185,9 @@ public class MusicBotUI extends javax.swing.JFrame {
                 if (indexFile.exists()){
                     indexFile.delete();
                 }
-                browseBtnClick();
+                if (browseBtnClick()){
+                    writePath(pathFile);
+                }
             }
         }
 
